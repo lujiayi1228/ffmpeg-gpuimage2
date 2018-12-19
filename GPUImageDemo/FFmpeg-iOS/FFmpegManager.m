@@ -136,21 +136,20 @@
 
 
 - (void)makeVideoByImagesWithMusic:(NSString *)musicPath
+                          duration:(float)duration
                       ProcessBlock:(void (^)(float))processBlock
                    completionBlock:(void (^)(NSError *))completionBlock
 {
     self.processBlock = processBlock;
     self.completionBlock = completionBlock;
     self.isBegin = NO;
-
-    //原始命令，将图片合成视频
-//    NSString *commandStr = [NSString stringWithFormat:@"ffmpeg -y -i %@ -i %@ -vcodec mpeg4 %@",DocumentPath(@"%05d.jpg"),musicPath, DocumentPath(@"1.mp4")];
     
-    //将图片合成视频，添加滤镜，视频比例为1080*1920，这样的方式貌似比例有一个范围，例如375*667就会报错size不对，MP4不支持高清，故使用h264格式，crf参数控制清晰度及文件大小，默认数值23，越小越清晰，文件越大，18一般就能满足清晰度
-    NSString *commandStr = [NSString stringWithFormat:@"ffmpeg -r 20 -y -i %@ -i %@ -filter:v scale='min(720,iw)':min'(1280,ih)':force_original_aspect_ratio=decrease,pad=720:1280:(ow-iw)/2:(oh-ih)/2 -vcodec libx264 -crf 10 %@",DocumentPath(@"%05d.jpg"),musicPath, DocumentPath(@"1.mp4")];
+    //将图片合成视频，添加滤镜，视频比例为1080*1920，这样的方式貌似比例有一个范围，例如375*667就会报错size不对，MP4不支持高清，故使用h264格式，crf参数控制清晰度及文件大小，默认数值23，越小越清晰，文件越大，18为视觉无损
+    //音频剪裁 -vn -ss 0 -t 3 ，-vn 剪裁，-ss 0 起始点为0，-t 3 duration为3，加载载入的音频之前
+    //参数
+    NSString *vnTime = [NSString stringWithFormat:@"-vn -ss 0 -t %f",duration];
+    NSString *commandStr = [NSString stringWithFormat:@"ffmpeg -framerate 20 -y -i %@ %@ -i %@ -filter:v scale='min(720,iw)':min'(1280,ih)':force_original_aspect_ratio=decrease,pad=720:1280:(ow-iw)/2:(oh-ih)/2 -c:v libx264 -crf 18 -pix_fmt yuv420p %@",DocumentPath(@"%05d.jpg"),vnTime,musicPath, DocumentPath(@"1.mp4")];
     
-    //将图片合成视频，滤镜为让视频按照375*667比例
-//    NSString *commandStr = [NSString stringWithFormat:@"ffmpeg -r 20 -y -i %@ -i %@ -filter:v scale=720:1280 -vcodec libx264 -crf 18 %@",DocumentPath(@"%05d.jpg"),musicPath, DocumentPath(@"1.mp4")];
     // 放在子线程运行
     [self runCmd:commandStr];
 }

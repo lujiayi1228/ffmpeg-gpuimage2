@@ -39,7 +39,16 @@
 + (void)stopRuning;
 
 
+/**
+ 根据duration剪裁音频，根据音频时长合成视频，这样就不用剪裁视频（耗资源），然后图片设置上限，使视频长度不能大于音频长度，即不需要再拼接音频
+
+ @param musicPath 音频路径
+ @param duration 视频长度
+ @param processBlock 进度block
+ @param completionBlock 完成block
+ */
 - (void)makeVideoByImagesWithMusic:(NSString *)musicPath
+                          duration:(float)duration
                       ProcessBlock:(void (^)(float))processBlock
                    completionBlock:(void (^)(NSError *))completionBlock;
 

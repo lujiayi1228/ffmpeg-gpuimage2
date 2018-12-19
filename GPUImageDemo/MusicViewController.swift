@@ -33,6 +33,10 @@ class MusicViewController: UIViewController {
     
     let timeSpacing : CGFloat = 0.465
     
+    let firstChangeTime : CGFloat = 1.509
+    
+    var duration : Float = 0
+    
     var lastTime : CGFloat = 0
     
     var playIndex = 0
@@ -46,6 +50,8 @@ class MusicViewController: UIViewController {
     var preViewPath = ""
     
     private var currentMusic: Int = 0
+    
+    
     
     lazy var preView: UIImageView = {
         let pre = UIImageView(frame: CGRect(x: 11, y: 100, width: 350, height: 400))
@@ -96,8 +102,8 @@ class MusicViewController: UIViewController {
             let timee = CGFloat(CMTimeGetSeconds(time))
             guard self != nil else {return}
             if self?.musicType == 0 {
-                if timee < 1.509 {return}//1.509是起点,每次到间隔时间就切换（因为精度不能达到0.001秒，故用区间判断）
-                if (1.509..<1.978).contains(timee) && self?.lastTime == 0{
+                if timee < (self?.firstChangeTime)! {return}//1.509是起点,每次到间隔时间就切换（因为精度不能达到0.001秒，故用区间判断）
+                if ((self?.firstChangeTime)!..<((self?.firstChangeTime)! + (self?.timeSpacing)!)).contains(timee) && self?.lastTime == 0{
                     self?.changeImage(time: timee)
                 }else if (self!.timeSpacing..<self!.timeSpacing*2).contains(timee - self!.lastTime){//时间间隔到2倍时间间隔区间内包含时间点，就切换图片
                     self?.changeImage(time: timee)
@@ -181,6 +187,7 @@ class MusicViewController: UIViewController {
             DispatchQueue.global().async {[weak self] in
                 switch self?.musicType {
                 case 0:
+                    self?.duration = Float((self?.firstChangeTime)! + CGFloat((self?.images.count)! - 1) * (self?.timeSpacing)!)
                     self?.saveVariableSpeedImages()
                     break
                 case 1:
@@ -258,7 +265,7 @@ class MusicViewController: UIViewController {
 //                }
 //        })
         
-        FFmpegManager.shared()?.makeVideoByImages(withMusic: (self.player.currentItem?.asset as! AVURLAsset).url.absoluteString, processBlock: { [weak self] (progress) in
+        FFmpegManager.shared()?.makeVideoByImages(withMusic: (self.player.currentItem?.asset as! AVURLAsset).url.absoluteString, duration:self.duration, processBlock: { [weak self] (progress) in
             DispatchQueue.main.async {
                 self?.progress.text = String(format: "制作中:%d%", progress*100)
             }
