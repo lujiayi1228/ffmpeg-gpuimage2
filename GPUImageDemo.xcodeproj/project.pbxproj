@@ -48,6 +48,11 @@
 		BB35D12521BE75FE00C03E5E /* music.bundle in Resources */ = {isa = PBXBuildFile; fileRef = BB35D12421BE75FD00C03E5E /* music.bundle */; };
 		BB35D12621BE75FE00C03E5E /* music.bundle in Resources */ = {isa = PBXBuildFile; fileRef = BB35D12421BE75FD00C03E5E /* music.bundle */; };
 		BB35D12721BE75FE00C03E5E /* music.bundle in Resources */ = {isa = PBXBuildFile; fileRef = BB35D12421BE75FD00C03E5E /* music.bundle */; };
+		BB3AD98B21D06E4700DDA3E8 /* RecordVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB3AD98A21D06E4700DDA3E8 /* RecordVC.swift */; };
+		BB3AD98D21D0B23300DDA3E8 /* RecordManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB3AD98C21D0B23300DDA3E8 /* RecordManager.swift */; };
+		BB3AD9CE21D1F89D00DDA3E8 /* GPUImageBeautifyFilter.mm in Sources */ = {isa = PBXBuildFile; fileRef = BB3AD9CB21D1F89D00DDA3E8 /* GPUImageBeautifyFilter.mm */; };
+		BB3AD9CF21D1F89D00DDA3E8 /* LFGPUImageEmptyFilter.mm in Sources */ = {isa = PBXBuildFile; fileRef = BB3AD9CC21D1F89D00DDA3E8 /* LFGPUImageEmptyFilter.mm */; };
+		BB3AD9D121D2197100DDA3E8 /* FilterCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB3AD9D021D2197100DDA3E8 /* FilterCollectionView.swift */; };
 		BB9A965521AFC149008848D8 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB9A965421AFC149008848D8 /* AVFoundation.framework */; };
 		BB9A965721AFC154008848D8 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB9A965621AFC154008848D8 /* CoreAudio.framework */; };
 		BBAC7B9E21ABE87100DC520A /* qwe.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BBAC7B9D21ABE87100DC520A /* qwe.mp4 */; };
@@ -250,6 +255,13 @@
 		BB35D11F21BE422700C03E5E /* ffmpegDemo-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ffmpegDemo-Bridging-Header.h"; sourceTree = "<group>"; };
 		BB35D12221BE661B00C03E5E /* MusicViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicViewController.swift; sourceTree = "<group>"; };
 		BB35D12421BE75FD00C03E5E /* music.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = music.bundle; sourceTree = "<group>"; };
+		BB3AD98A21D06E4700DDA3E8 /* RecordVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordVC.swift; sourceTree = "<group>"; };
+		BB3AD98C21D0B23300DDA3E8 /* RecordManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordManager.swift; sourceTree = "<group>"; };
+		BB3AD9CA21D1F89D00DDA3E8 /* LFGPUImageEmptyFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LFGPUImageEmptyFilter.h; sourceTree = "<group>"; };
+		BB3AD9CB21D1F89D00DDA3E8 /* GPUImageBeautifyFilter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GPUImageBeautifyFilter.mm; sourceTree = "<group>"; };
+		BB3AD9CC21D1F89D00DDA3E8 /* LFGPUImageEmptyFilter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LFGPUImageEmptyFilter.mm; sourceTree = "<group>"; };
+		BB3AD9CD21D1F89D00DDA3E8 /* GPUImageBeautifyFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPUImageBeautifyFilter.h; sourceTree = "<group>"; };
+		BB3AD9D021D2197100DDA3E8 /* FilterCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterCollectionView.swift; sourceTree = "<group>"; };
 		BB9A965421AFC149008848D8 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		BB9A965621AFC154008848D8 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		BBAC7B9D21ABE87100DC520A /* qwe.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = qwe.mp4; sourceTree = "<group>"; };
@@ -572,13 +584,12 @@
 				BB2761B721A69F1600401F99 /* AppDelegate.swift */,
 				BB2761B921A69F1600401F99 /* ViewController.swift */,
 				BB20C6F921BA1737006A9F0D /* HomeViewController.swift */,
-				BB20C6FD21BA5B4C006A9F0D /* PhotoEditVC.swift */,
-				BB35D12221BE661B00C03E5E /* MusicViewController.swift */,
-				BB2AFFB721B9104800C5B1B3 /* Preview.swift */,
 				BBC5B3FF21C0BB7600A547E5 /* TestViewController.swift */,
-				BB26297521C73EF500EFE32B /* PreviewVC.swift */,
-				BB2761BB21A69F1600401F99 /* Main.storyboard */,
+				BB3AD98921D06E1700DDA3E8 /* Record */,
+				BB3AD98821D06DE400DDA3E8 /* Photo */,
+				BB3AD9C921D1F89D00DDA3E8 /* Filters */,
 				BB2761BE21A69F2200401F99 /* Assets.xcassets */,
+				BB2761BB21A69F1600401F99 /* Main.storyboard */,
 				BB2761C021A69F2200401F99 /* LaunchScreen.storyboard */,
 				BB2761C321A69F2200401F99 /* Info.plist */,
 			);
@@ -626,6 +637,38 @@
 				BB35D11F21BE422700C03E5E /* ffmpegDemo-Bridging-Header.h */,
 			);
 			path = "FFmpeg-iOS";
+			sourceTree = "<group>";
+		};
+		BB3AD98821D06DE400DDA3E8 /* Photo */ = {
+			isa = PBXGroup;
+			children = (
+				BB35D12221BE661B00C03E5E /* MusicViewController.swift */,
+				BB26297521C73EF500EFE32B /* PreviewVC.swift */,
+				BB2AFFB721B9104800C5B1B3 /* Preview.swift */,
+				BB20C6FD21BA5B4C006A9F0D /* PhotoEditVC.swift */,
+				BB3AD9D021D2197100DDA3E8 /* FilterCollectionView.swift */,
+			);
+			path = Photo;
+			sourceTree = "<group>";
+		};
+		BB3AD98921D06E1700DDA3E8 /* Record */ = {
+			isa = PBXGroup;
+			children = (
+				BB3AD98A21D06E4700DDA3E8 /* RecordVC.swift */,
+				BB3AD98C21D0B23300DDA3E8 /* RecordManager.swift */,
+			);
+			path = Record;
+			sourceTree = "<group>";
+		};
+		BB3AD9C921D1F89D00DDA3E8 /* Filters */ = {
+			isa = PBXGroup;
+			children = (
+				BB3AD9CA21D1F89D00DDA3E8 /* LFGPUImageEmptyFilter.h */,
+				BB3AD9CC21D1F89D00DDA3E8 /* LFGPUImageEmptyFilter.mm */,
+				BB3AD9CD21D1F89D00DDA3E8 /* GPUImageBeautifyFilter.h */,
+				BB3AD9CB21D1F89D00DDA3E8 /* GPUImageBeautifyFilter.mm */,
+			);
+			path = Filters;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -794,7 +837,7 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-GPUImageDemo/Pods-GPUImageDemo-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/FSPagerView/FSPagerView.framework",
-				"${BUILT_PRODUCTS_DIR}/GPUImage2/GPUImage2.framework",
+				"${BUILT_PRODUCTS_DIR}/GPUImage/GPUImage.framework",
 				"${BUILT_PRODUCTS_DIR}/MJRefresh/MJRefresh.framework",
 				"${BUILT_PRODUCTS_DIR}/TZImagePickerController/TZImagePickerController.framework",
 			);
@@ -803,7 +846,7 @@
 			);
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FSPagerView.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GPUImage2.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GPUImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MJRefresh.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TZImagePickerController.framework",
 			);
@@ -829,11 +872,16 @@
 				BB26297621C73EF500EFE32B /* PreviewVC.swift in Sources */,
 				BB35D12321BE661B00C03E5E /* MusicViewController.swift in Sources */,
 				BB21DC0B21C37AF10000B625 /* cmdutils.c in Sources */,
+				BB3AD9CF21D1F89D00DDA3E8 /* LFGPUImageEmptyFilter.mm in Sources */,
 				BB20C6FC21BA2A06006A9F0D /* UIView+Extension.swift in Sources */,
 				BB2CBC8C21BA0876004D4F61 /* ConstantDefine.swift in Sources */,
 				BB20C6FE21BA5B4C006A9F0D /* PhotoEditVC.swift in Sources */,
+				BB3AD9D121D2197100DDA3E8 /* FilterCollectionView.swift in Sources */,
 				BB2AFFB821B9104800C5B1B3 /* Preview.swift in Sources */,
 				BB2CBC8D21BA0876004D4F61 /* String+Extension.swift in Sources */,
+				BB3AD9CE21D1F89D00DDA3E8 /* GPUImageBeautifyFilter.mm in Sources */,
+				BB3AD98B21D06E4700DDA3E8 /* RecordVC.swift in Sources */,
+				BB3AD98D21D0B23300DDA3E8 /* RecordManager.swift in Sources */,
 				BB21DC0C21C37AF10000B625 /* ffmpeg.c in Sources */,
 				BB20C6FA21BA1737006A9F0D /* HomeViewController.swift in Sources */,
 			);

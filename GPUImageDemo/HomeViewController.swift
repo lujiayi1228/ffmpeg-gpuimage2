@@ -85,7 +85,8 @@ class HomeViewController: UIViewController {
             self.presentAlbum(isImage: true)
             break
         case 1:
-            self.presentAlbum(isImage: false)
+            let newVC = UINavigationController(rootViewController: RecordVC.init())
+            self.present(newVC, animated: true, completion: nil)
             break
         default:
             break

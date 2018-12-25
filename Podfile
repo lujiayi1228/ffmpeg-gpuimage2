@@ -8,6 +8,7 @@
  
  pod 'MJRefresh'
  pod 'TZImagePickerController'
- pod 'GPUImage2', :podspec => './GPUImage2.podspec'
+# pod 'GPUImage2', :podspec => './GPUImage2.podspec'
+ pod 'GPUImage'
  pod 'FSPagerView'
  end

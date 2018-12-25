@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import GPUImage2
+//import GPUImage2
 
 class TestViewController: UIViewController {
 
@@ -19,15 +19,15 @@ class TestViewController: UIViewController {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        let toonFilter = SepiaToneFilter()
-        let testImage = UIImage(named:"YuanTu")!
-        let pictureInput = PictureInput(image:testImage)
-        let pictureOutput = PictureOutput()
-        pictureOutput.imageAvailableCallback = {image in
-            self.imageV.image = image
-        }
-        pictureInput --> toonFilter --> pictureOutput
-        pictureInput.processImage(synchronously:true)
+//        let toonFilter = SepiaToneFilter()
+//        let testImage = UIImage(named:"YuanTu")!
+//        let pictureInput = PictureInput(image:testImage)
+//        let pictureOutput = PictureOutput()
+//        pictureOutput.imageAvailableCallback = {image in
+//            self.imageV.image = image
+//        }
+//        pictureInput --> toonFilter --> pictureOutput
+//        pictureInput.processImage(synchronously:true)
     }
 
 }

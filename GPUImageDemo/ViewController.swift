@@ -10,7 +10,7 @@ import UIKit
 import AVFoundation
 import TZImagePickerController
 import CoreAudio
-import GPUImage2
+import GPUImage
 
 
 class ViewController: UIViewController {
@@ -22,17 +22,19 @@ class ViewController: UIViewController {
         return vieww
     }()
     
-    var movie:MovieInput!
-    var filter:BasicOperation!
-    var speaker:SpeakerOutput!
+    var movie:GPUImageMovie!
+    var filter:GPUImageFilter!
+//    var speaker:SpeakerOutput!
     
-    private lazy var imageView : RenderView = {
-        let vieww = RenderView(frame: self.preview.frame)
-        self.preview.isHidden = true
-        vieww.layer.backgroundColor = UIColor.clear.cgColor
-        vieww.layer.contentsGravity = .resizeAspect
-        return vieww
-    }()
+    let imageView = UIImageView()
+    
+//    private lazy var imageView : RenderView = {
+//        let vieww = RenderView(frame: self.preview.frame)
+//        self.preview.isHidden = true
+//        vieww.layer.backgroundColor = UIColor.clear.cgColor
+//        vieww.layer.contentsGravity = .resizeAspect
+//        return vieww
+//    }()
     
     private var dataSource: [[String: String]] = {
         let arr = [["key":"YuanTu","title":"原图"],
@@ -150,19 +152,19 @@ class ViewController: UIViewController {
     }
     
     private func recievedMovie(asset : AVAsset) {
-        do {
-            let url = (asset as! AVURLAsset).url
-            let audioDecodeSettings = [AVFormatIDKey:kAudioFormatLinearPCM]
-            movie = try MovieInput(url:url, playAtActualSpeed:true, loop:true, audioSettings:audioDecodeSettings)
-            movie.runBenchmark = true
-            speaker = SpeakerOutput()
-            movie.audioEncodingTarget = speaker
-            movie --> imageView
-            movie.start()
-            speaker.start()
-        } catch  {
-            print("errorrrrrr")
-        }
+//        do {
+//            let url = (asset as! AVURLAsset).url
+//            let audioDecodeSettings = [AVFormatIDKey:kAudioFormatLinearPCM]
+//            movie = try MovieInput(url:url, playAtActualSpeed:true, loop:true, audioSettings:audioDecodeSettings)
+//            movie.runBenchmark = true
+//            speaker = SpeakerOutput()
+//            movie.audioEncodingTarget = speaker
+//            movie --> imageView
+//            movie.start()
+//            speaker.start()
+//        } catch  {
+//            print("errorrrrrr")
+//        }
     }
     
     private func recievedVideo(video: PHAsset, coverImage: UIImage) {
@@ -197,12 +199,12 @@ class ViewController: UIViewController {
         }
         movie.removeAllTargets()
         if tag == 0 {
-            movie.addTarget(imageView)
+//            movie.addTarget(imageView)
             return
         }
         filter = MovieFilter.filter(tag: tag)
         movie.addTarget(filter)
-        filter.addTarget(imageView)
+//        filter.addTarget(imageView)
     }
     
     @objc private func playerVideo() {
@@ -281,29 +283,27 @@ class filterCell: UICollectionViewCell {
 }
 
 class MovieFilter: NSObject {
-    public class func filter(tag: Int) -> BasicOperation {
+    public class func filter(tag: Int) -> GPUImageFilter {
         
         switch tag {
         case 1:
-            return SepiaToneFilter()
+            return GPUImageSepiaFilter()//怀旧
         case 2:
-            return ColorInversion()
+            return GPUImageColorInvertFilter()//底片
         case 3:
-            return SketchFilter()
+            return GPUImageSketchFilter()//黑白
         case 4:
-            return EmbossFilter()
+            return GPUImageEmbossFilter()//浮雕
         case 5:
-            return Haze()
+            return GPUImageHazeFilter()//朦胧
         case 6:
-            return ToonFilter()
+            return GPUImageToonFilter()//卡通
         case 7:
-            return BulgeDistortion()
+            return GPUImageBulgeDistortionFilter()//凸起
         case 8:
-            return GlassSphereRefraction()
+            return GPUImageGlassSphereFilter()//水晶
         default:
-            let theFilter = BrightnessAdjustment()
-            theFilter.brightness = 0
-            return theFilter
+            return GPUImageFilter()//原片
         }
     }
 }
