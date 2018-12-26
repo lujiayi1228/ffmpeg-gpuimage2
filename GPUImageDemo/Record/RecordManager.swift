@@ -12,6 +12,7 @@ import GPUImage
 
 class RecordManager: NSObject {
     
+    //相机
     private lazy var camera: GPUImageVideoCamera = {
         let ca = GPUImageVideoCamera(sessionPreset: AVCaptureSession.Preset.hd1280x720.rawValue, cameraPosition: .back)!
         do {
@@ -42,25 +43,35 @@ class RecordManager: NSObject {
         return ca
     }()
     
+    //美颜滤镜
     private lazy var beautifyFilter: GPUImageOutput = {
         let f = LFGPUImageEmptyFilter()
         return f
     }()
     
+    //预览
     lazy var filterdVideoView: GPUImageView = {
         let fview = GPUImageView(frame: screenFrame)
         return fview
     }()
     
-    private var firstRun = true
-    
-    private var paused = true
-    
-    private var isFront = false
-    
+    //当前滤镜(怀旧风格等)
     private var filter : GPUImageFilter?
     
+    //剪裁滤镜(录制画面的篇幅)
     private var cropFilter : GPUImageCropFilter?
+    
+    //视频保存路径,合成视频后删除文件
+    private let videoPath = documentPath! + "/RecordVideo"
+    
+    //video数组
+    private var videos : [URL] = []
+    
+    //录制状态
+    private var isRecording = false
+    
+    //存储
+    private var movieWriter : GPUImageMovieWriter?
     
     override init() {
         super.init()
@@ -71,15 +82,46 @@ class RecordManager: NSObject {
         filter = GPUImageFilter()
         cropFilter = GPUImageCropFilter()
         camera.startCapture()
+        createVideoFolder()
+    }
+    
+    private func createVideoFolder() {
+        let fileManager = FileManager.default
+        var isDir : ObjCBool = ObjCBool(false)
+        let isExist = fileManager.fileExists(atPath: videoPath, isDirectory: &isDir)
+        if !(isDir.boolValue && isExist) {
+            do {
+                try fileManager.createDirectory(atPath: videoPath, withIntermediateDirectories: true, attributes: nil)
+            }catch {
+                print("recordvideo文件夹创建失败")
+            }
+        }
     }
     
     //开始录制
     func startRecording() {
-        
+        let moviePath = URL(fileURLWithPath: videoPath + "/\(videos.count).mov")
+        movieWriter = GPUImageMovieWriter.init(movieURL: moviePath, size: CGSize(width: 720, height: 1280))
+        movieWriter?.encodingLiveVideo = true
+        movieWriter?.shouldPassthroughAudio = true
+        filter?.addTarget(movieWriter)
+        camera.audioEncodingTarget = movieWriter
+        movieWriter?.startRecording()
+        isRecording = true
+        videos.append(moviePath)
     }
     
     //停止录制
     func stopRecording() {
+        camera.audioEncodingTarget = nil
+        guard videos.count != 0 else { return }
+        if isRecording {
+            movieWriter?.finishRecording()
+            filter?.removeTarget(movieWriter)
+        }else {
+            return
+        }
+        isRecording = false
         
     }
     
@@ -124,8 +166,8 @@ class RecordManager: NSObject {
         self.filter?.removeAllTargets()
         self.cropFilter?.removeAllTargets()
         camera.addTarget((beautifyFilter as! GPUImageInput))
-        beautifyFilter.addTarget(self.filter)
-        self.filter!.addTarget(self.cropFilter)
-        self.cropFilter!.addTarget(filterdVideoView)
+        beautifyFilter.addTarget(self.cropFilter)
+        self.cropFilter!.addTarget(self.filter)
+        self.filter!.addTarget(filterdVideoView)
     }
 }

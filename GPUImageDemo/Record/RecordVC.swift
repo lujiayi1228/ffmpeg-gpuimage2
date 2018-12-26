@@ -204,7 +204,8 @@ extension RecordVC :UICollectionViewDelegate,UICollectionViewDataSource {
     
     //录制
     @objc private func recordAction(sender:UIButton) {
-        
+        !sender.isSelected ? recorder.startRecording() : recorder.stopRecording()
+        sender.isSelected = !sender.isSelected
     }
     
     //变更录制画面frame
