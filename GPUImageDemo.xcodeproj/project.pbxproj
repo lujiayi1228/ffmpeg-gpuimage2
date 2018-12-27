@@ -592,6 +592,7 @@
 				BB2761BB21A69F1600401F99 /* Main.storyboard */,
 				BB2761C021A69F2200401F99 /* LaunchScreen.storyboard */,
 				BB2761C321A69F2200401F99 /* Info.plist */,
+				BB3AD9D321D462E500DDA3E8 /* CustomView */,
 			);
 			path = GPUImageDemo;
 			sourceTree = "<group>";
@@ -646,7 +647,6 @@
 				BB26297521C73EF500EFE32B /* PreviewVC.swift */,
 				BB2AFFB721B9104800C5B1B3 /* Preview.swift */,
 				BB20C6FD21BA5B4C006A9F0D /* PhotoEditVC.swift */,
-				BB3AD9D021D2197100DDA3E8 /* FilterCollectionView.swift */,
 			);
 			path = Photo;
 			sourceTree = "<group>";
@@ -669,6 +669,14 @@
 				BB3AD9CB21D1F89D00DDA3E8 /* GPUImageBeautifyFilter.mm */,
 			);
 			path = Filters;
+			sourceTree = "<group>";
+		};
+		BB3AD9D321D462E500DDA3E8 /* CustomView */ = {
+			isa = PBXGroup;
+			children = (
+				BB3AD9D021D2197100DDA3E8 /* FilterCollectionView.swift */,
+			);
+			path = CustomView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

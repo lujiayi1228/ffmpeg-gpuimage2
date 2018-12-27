@@ -23,8 +23,8 @@ class RecordVC: UIViewController {
     }()
     
     //录制按钮
-    private lazy var recordBtn: UIButton = {
-        let btn = UIButton(type: .custom)
+    private lazy var recordBtn: RecordButton = {
+        let btn = RecordButton(type: .custom)
         btn.frame = CGRect(x: 0, y: 0, width: realValue_W(value: 160), height: realValue_W(value: 160))
         btn.centerX = self.view.centerX
         btn.bottom = screenHeight - realValue_H(value: 180)
@@ -246,4 +246,32 @@ extension RecordVC :UICollectionViewDelegate,UICollectionViewDataSource {
     }
     
 
+}
+
+class RecordButton: UIButton {
+    
+    //总刻度
+    private var progressDuration : CGFloat = 0
+    
+    //定时器
+    private var timer: Timer!
+    
+    override func draw(_ rect: CGRect) {
+        let layer = CAShapeLayer()
+        layer.lineWidth = 4
+        layer.strokeColor = whiteColor.cgColor
+        let path = UIBezierPath(arcCenter: CGPoint(x: self.width/2, y: self.height/2), radius: self.width/2, startAngle: 0, endAngle: .pi, clockwise: true)
+        
+    }
+    
+    func startProgressAnimation(duration:CGFloat) {
+        progressDuration = duration
+        timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(progressing), userInfo: nil, repeats: false)
+    }
+    
+    @objc private func progressing() {
+        progressDuration -= 0.1
+        self.setTitle("剩余:\(progressDuration)", for: .selected)
+        self.setNeedsDisplay()
+    }
 }
