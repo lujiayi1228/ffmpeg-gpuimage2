@@ -113,27 +113,12 @@ class HomeViewController: UIViewController {
     }
     
     private func recievedImages(withImages images: [UIImage]) {
-        let newVC = PhotoEditVC.init(images: images)
-        self.present(UINavigationController(rootViewController: newVC), animated: true, completion: nil)
+//        let newVC = PhotoEditVC.init(images: images)
+//        self.present(UINavigationController(rootViewController: newVC), animated: true, completion: nil)
+        let maker = VideoMaker()
+        maker.moveImagesToSandBox(images:images,duration:1)
     }
     
-    private func scaleImage(image:UIImage) -> CGSize {
-        var width = image.size.width
-        var height = image.size.height
-        if width < 720 && height < 1280 {
-            let widthS = 720/width
-            let heightS = 1280/height
-            print("____width:\(width)____height:\(height)")
-            if widthS < heightS {
-                width *= widthS
-                height *= widthS
-            }else {
-                width *= heightS
-                height *= heightS
-            }
-        }
-        return CGSize(width: width, height: height)
-    }
 }
 
 extension HomeViewController : TZImagePickerControllerDelegate{

@@ -10,6 +10,9 @@ import UIKit
 
 class RecordVC: UIViewController {
 
+    //分段视频默认时长上限
+    private let defaultDuration : CGFloat = 10
+    
     //关闭按钮
     private lazy var closeBtn: UIButton = {
         let btn = UIButton(type: .custom)
@@ -204,8 +207,9 @@ extension RecordVC :UICollectionViewDelegate,UICollectionViewDataSource {
     
     //录制
     @objc private func recordAction(sender:UIButton) {
-        !sender.isSelected ? recorder.startRecording() : recorder.stopRecording()
         sender.isSelected = !sender.isSelected
+        sender.isSelected ? recorder.startRecording() : recorder.stopRecording()
+        sender.isSelected ? recordBtn.startProgressAnimation(duration: defaultDuration) : recordBtn.stopProgressAnimation()
     }
     
     //变更录制画面frame
@@ -251,27 +255,54 @@ extension RecordVC :UICollectionViewDelegate,UICollectionViewDataSource {
 class RecordButton: UIButton {
     
     //总刻度
+    private var totalDuration : CGFloat = 0
+    
+    //当前进度
     private var progressDuration : CGFloat = 0
     
     //定时器
-    private var timer: Timer!
+    private var timer: Timer?
     
     override func draw(_ rect: CGRect) {
         let layer = CAShapeLayer()
         layer.lineWidth = 4
         layer.strokeColor = whiteColor.cgColor
-        let path = UIBezierPath(arcCenter: CGPoint(x: self.width/2, y: self.height/2), radius: self.width/2, startAngle: 0, endAngle: .pi, clockwise: true)
-        
+        layer.fillColor = clearColor.cgColor
+        let path = UIBezierPath(arcCenter: CGPoint(x: self.width/2, y: self.height/2), radius: self.width/2, startAngle: .pi * -1/2, endAngle: .pi * 1.5 * (totalDuration - progressDuration), clockwise: true)
+        layer.path = path.cgPath
+        self.layer.addSublayer(layer)
     }
     
     func startProgressAnimation(duration:CGFloat) {
         progressDuration = duration
-        timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(progressing), userInfo: nil, repeats: false)
+        totalDuration = duration
+        self.layer.borderColor = clearColor.cgColor
+        timer = Timer(timeInterval: 0.1, target: self, selector: #selector(progressing), userInfo: nil, repeats: true)
+        RunLoop.current.add(timer!, forMode: .default)
+    }
+    
+    func stopProgressAnimation() {
+
+        self.layer.borderColor = whiteColor.cgColor
+        progressDuration = 0
+        self.isSelected = false
+        self.setNeedsDisplay()
+        timer!.invalidate()
+        timer = nil
     }
     
     @objc private func progressing() {
         progressDuration -= 0.1
         self.setTitle("剩余:\(progressDuration)", for: .selected)
         self.setNeedsDisplay()
+        if progressDuration <= 0 {
+            stopProgressAnimation()
+        }
+    }
+    
+    deinit {
+        if timer != nil && !timer!.isValid {
+            timer!.invalidate()
+        }
     }
 }

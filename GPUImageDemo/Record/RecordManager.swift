@@ -127,6 +127,10 @@ class RecordManager: NSObject {
     
     //退出
     func cancel(finished:()->()) {
+        if isRecording {
+            movieWriter?.cancelRecording()
+            filter?.removeTarget(movieWriter)
+        }
         camera.stopCapture()
         camera.removeAllTargets()
         beautifyFilter.removeAllTargets()

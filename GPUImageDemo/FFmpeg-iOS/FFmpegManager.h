@@ -55,4 +55,21 @@
 - (void)makeVideoWithCommand:(NSString *)command
                 ProcessBlock:(void (^)(float))processBlock
              completionBlock:(void (^)(NSError *))completionBlock;
+
+
+/**
+ 图片合成视频,不需要音乐
+
+ @param imagesPath 图片路径
+ @param imageCount 图片数量
+ @param interval 每张图的持续时间
+ @param processBlock 进度回调
+ @param completionBlock 完成回调
+ */
+- (void)makeVideoByImages:(NSString *)imagesPath
+               imageCount:(int)count
+                 interval:(float)interval
+             ProcessBlock:(void (^)(float))processBlock
+          completionBlock:(void (^)(NSError *))completionBlock;
+
 @end

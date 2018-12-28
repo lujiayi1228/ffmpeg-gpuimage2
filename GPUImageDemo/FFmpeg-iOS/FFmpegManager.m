@@ -163,4 +163,65 @@
     self.isBegin = NO;
     [self runCmd:command];
 }
+
+- (void)makeVideoByImages:(NSString *)imagesPath
+               imageCount:(int)count
+                 interval:(float)interval
+             ProcessBlock:(void (^)(float))processBlock
+          completionBlock:(void (^)(NSError *))completionBlock
+{
+    self.processBlock = processBlock;
+    self.completionBlock = completionBlock;
+    self.isBegin = NO;
+    
+//    NSString *commandStr = [NSString stringWithFormat:@"ffmpeg -r %f -y -i %@ -filter:v scale='min(720,iw)':min'(1280,ih)':force_original_aspect_ratio=decrease,pad=720:1280:(ow-iw)/2:(oh-ih)/2 -c:v libx264 -crf 18 -pix_fmt yuv420p %@",fps,[imagesPath stringByAppendingString:@"/%05d.jpg"], [imagesPath stringByAppendingString:@"video.mp4"]];
+    
+    NSDictionary *aguments = [self inputStringWithImagesPath:imagesPath interval:interval imageCount:count];
+    NSString *input = aguments[@"input"];
+    NSString *filter = aguments[@"filter"];
+    NSString *command = [NSString stringWithFormat:@"ffmpeg -y %@-filter_complex %@ -map [v] 1.mp4",input,filter];
+    // 放在子线程运行
+    NSLog(@"%@",command);
+    [self runCmd:command];
+}
+
+- (NSDictionary *)inputStringWithImagesPath:(NSString *)path interval:(float)interval imageCount:(int)count
+{
+    //示例
+//    ffmpeg -y \
+//    -loop 1 -t 1 -i 00000.png \
+//    -loop 1 -t 1 -i 00001.png \
+//    -loop 1 -t 1 -i 00002.png \
+//    -loop 1 -t 1 -i 00003.png \
+//    -loop 1 -t 1 -i 00004.png \
+//    -filter_complex \
+//    "[1:v][0:v]blend=all_expr='A*(if(gte(T,0.5),1,T/0.5))+B*(1-(if(gte(T,0.5),1,T/0.5)))'[b1v]; \
+//    [2:v][1:v]blend=all_expr='A*(if(gte(T,0.5),1,T/0.5))+B*(1-(if(gte(T,0.5),1,T/0.5)))'[b2v]; \
+//    [3:v][2:v]blend=all_expr='A*(if(gte(T,0.5),1,T/0.5))+B*(1-(if(gte(T,0.5),1,T/0.5)))'[b3v]; \
+//    [4:v][3:v]blend=all_expr='A*(if(gte(T,0.5),1,T/0.5))+B*(1-(if(gte(T,0.5),1,T/0.5)))'[b4v]; \
+//    [0:v][b1v][1:v][b2v][2:v][b3v][3:v][b4v][4:v]concat=n=9:v=1:a=0,format=yuv420p[v]" -map "[v]" 1.mp4
+    
+    
+    NSString *input = @"";
+    NSString *filter = @"";
+    NSString *filterLastCommand = @"";
+    for (int i = 0; i <count; i ++) {
+        NSString *name = [NSString stringWithFormat:@"/%05d.png",i];
+        NSString *command = [NSString stringWithFormat:@"-loop 1 -t %.1f -i %@%@ ",interval,path,name];
+        input = [input stringByAppendingString:command];
+        if (i == count - 1) {
+            NSString *lastUnit = [NSString stringWithFormat:@"[%d:v]concat=n=%d:v=1:a=0,format=yuv420p[v]",i,count*2-1];
+            filterLastCommand = [filterLastCommand stringByAppendingString:lastUnit];
+            filter = [filter stringByAppendingString:filterLastCommand];
+        }else {
+            NSString *filterCommand = [NSString stringWithFormat:@"[%d:v][%d:v]blend=all_expr='A*(if(gte(T,0.5),1,T/0.5))+B*(1-(if(gte(T,0.5),1,T/0.5)))'[b%dv]; ",i+1,i,i+1];
+            filter = [filter stringByAppendingString:filterCommand];
+            
+            NSString *lastUnit = [NSString stringWithFormat:@"[%d:v][b%dv]",i,i+1];
+            filterLastCommand = [filterLastCommand stringByAppendingString:lastUnit];
+        }
+    }
+    return @{@"input":input,@"filter":filter};
+}
+
 @end
