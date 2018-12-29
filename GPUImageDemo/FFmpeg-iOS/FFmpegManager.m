@@ -19,8 +19,8 @@
 @property (nonatomic, assign) BOOL isBegin;
 @property (nonatomic, assign) long long fileDuration;
 @property (nonatomic, copy) void (^processBlock)(float process);
-@property (nonatomic, copy) void (^completionBlock)(NSError *error);
-
+@property (nonatomic, copy) void (^completionBlock)(NSError *,NSURL *);
+@property (strong, nonatomic) NSString *output;
 @end
 
 @implementation FFmpegManager
@@ -38,7 +38,7 @@
 - (void)converWithInputPath:(NSString *)inputPath
                  outputPath:(NSString *)outpath
                processBlock:(void (^)(float process))processBlock
-            completionBlock:(void (^)(NSError *error))completionBlock {
+            completionBlock:(void (^)(NSError *,NSURL *))completionBlock {
     self.processBlock = processBlock;
     self.completionBlock = completionBlock;
     self.isBegin = NO;
@@ -51,7 +51,7 @@
     [[[NSThread alloc] initWithTarget:self selector:@selector(runCmd:) object:commandStr] start];
 }
 
-- (void)makeVideoByImagesWithProcessBlock:(void (^)(float))processBlock completionBlock:(void (^)(NSError *))completionBlock
+- (void)makeVideoByImagesWithProcessBlock:(void (^)(float))processBlock completionBlock:(void (^)(NSError *,NSURL *))completionBlock
 {
     self.processBlock = processBlock;
     self.completionBlock = completionBlock;
@@ -126,7 +126,8 @@
     }
     if (mgr.completionBlock) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            mgr.completionBlock(error);
+            NSURL *video = error == nil ? [NSURL fileURLWithPath:mgr.output] : nil;
+            mgr.completionBlock(error,video);
         });
     }
     
@@ -138,7 +139,7 @@
 - (void)makeVideoByImagesWithMusic:(NSString *)musicPath
                           duration:(float)duration
                       ProcessBlock:(void (^)(float))processBlock
-                   completionBlock:(void (^)(NSError *))completionBlock
+                   completionBlock:(void (^)(NSError *,NSURL *))completionBlock
 {
     self.processBlock = processBlock;
     self.completionBlock = completionBlock;
@@ -156,7 +157,7 @@
 
 - (void)makeVideoWithCommand:(NSString *)command
                 ProcessBlock:(void (^)(float))processBlock
-             completionBlock:(void (^)(NSError *))completionBlock
+             completionBlock:(void (^)(NSError *,NSURL *))completionBlock
 {
     self.processBlock = processBlock;
     self.completionBlock = completionBlock;
@@ -168,7 +169,7 @@
                imageCount:(int)count
                  interval:(float)interval
              ProcessBlock:(void (^)(float))processBlock
-          completionBlock:(void (^)(NSError *))completionBlock
+          completionBlock:(void (^)(NSError *,NSURL *))completionBlock
 {
     self.processBlock = processBlock;
     self.completionBlock = completionBlock;
@@ -179,7 +180,8 @@
     NSDictionary *aguments = [self inputStringWithImagesPath:imagesPath interval:interval imageCount:count];
     NSString *input = aguments[@"input"];
     NSString *filter = aguments[@"filter"];
-    NSString *command = [NSString stringWithFormat:@"ffmpeg -y %@-filter_complex %@ -map [v] 1.mp4",input,filter];
+    self.output = [imagesPath stringByAppendingString:@"/output.mp4"];
+    NSString *command = [NSString stringWithFormat:@"ffmpeg -y %@-filter_complex %@ -map [v] %@",input,filter,self.output];
     // 放在子线程运行
     NSLog(@"%@",command);
     [self runCmd:command];
@@ -187,7 +189,7 @@
 
 - (NSDictionary *)inputStringWithImagesPath:(NSString *)path interval:(float)interval imageCount:(int)count
 {
-    //示例
+    //示例  注意，-filter_complex 的参数在ios上不需要用引号扩起来，里面的单引号可以保留，每一句之后的空格需要删除！！！不然报错no such filter "" 这样的语法错误
 //    ffmpeg -y \
 //    -loop 1 -t 1 -i 00000.png \
 //    -loop 1 -t 1 -i 00001.png \
@@ -195,10 +197,10 @@
 //    -loop 1 -t 1 -i 00003.png \
 //    -loop 1 -t 1 -i 00004.png \
 //    -filter_complex \
-//    "[1:v][0:v]blend=all_expr='A*(if(gte(T,0.5),1,T/0.5))+B*(1-(if(gte(T,0.5),1,T/0.5)))'[b1v]; \
-//    [2:v][1:v]blend=all_expr='A*(if(gte(T,0.5),1,T/0.5))+B*(1-(if(gte(T,0.5),1,T/0.5)))'[b2v]; \
-//    [3:v][2:v]blend=all_expr='A*(if(gte(T,0.5),1,T/0.5))+B*(1-(if(gte(T,0.5),1,T/0.5)))'[b3v]; \
-//    [4:v][3:v]blend=all_expr='A*(if(gte(T,0.5),1,T/0.5))+B*(1-(if(gte(T,0.5),1,T/0.5)))'[b4v]; \
+//    "[1:v][0:v]blend=all_expr='A*(if(gte(T,0.5),1,T/0.5))+B*(1-(if(gte(T,0.5),1,T/0.5)))'[b1v];\ \\此处 <; \>之间切记不可有空格
+//    [2:v][1:v]blend=all_expr='A*(if(gte(T,0.5),1,T/0.5))+B*(1-(if(gte(T,0.5),1,T/0.5)))'[b2v];\
+//    [3:v][2:v]blend=all_expr='A*(if(gte(T,0.5),1,T/0.5))+B*(1-(if(gte(T,0.5),1,T/0.5)))'[b3v];\
+//    [4:v][3:v]blend=all_expr='A*(if(gte(T,0.5),1,T/0.5))+B*(1-(if(gte(T,0.5),1,T/0.5)))'[b4v];\
 //    [0:v][b1v][1:v][b2v][2:v][b3v][3:v][b4v][4:v]concat=n=9:v=1:a=0,format=yuv420p[v]" -map "[v]" 1.mp4
     
     
@@ -214,7 +216,7 @@
             filterLastCommand = [filterLastCommand stringByAppendingString:lastUnit];
             filter = [filter stringByAppendingString:filterLastCommand];
         }else {
-            NSString *filterCommand = [NSString stringWithFormat:@"[%d:v][%d:v]blend=all_expr='A*(if(gte(T,0.5),1,T/0.5))+B*(1-(if(gte(T,0.5),1,T/0.5)))'[b%dv]; ",i+1,i,i+1];
+            NSString *filterCommand = [NSString stringWithFormat:@"[%d:v][%d:v]blend=all_expr='A*(if(gte(T,1.5),1,T/1.5))+B*(1-(if(gte(T,1.5),1,T/1.5)))'[b%dv];",i+1,i,i+1];
             filter = [filter stringByAppendingString:filterCommand];
             
             NSString *lastUnit = [NSString stringWithFormat:@"[%d:v][b%dv]",i,i+1];

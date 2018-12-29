@@ -16,10 +16,20 @@ class HomeViewController: UIViewController {
     
     var items : [(UIButton,CGPoint,CGPoint)] = []
     
+    lazy var progressView: UILabel = {
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: screenWidth, height: 50))
+        label.centerY = self.view.height/2
+        label.backgroundColor = clearColor
+        label.textColor = UIColor.red
+        label.textAlignment = .center
+        label.isHidden = true
+        return label
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.createItems(names: ["图片","视频" ])
+        self.view.addSubview(progressView)
     }
     
     @IBAction func clicked(_ sender: Any) {
@@ -116,7 +126,17 @@ class HomeViewController: UIViewController {
 //        let newVC = PhotoEditVC.init(images: images)
 //        self.present(UINavigationController(rootViewController: newVC), animated: true, completion: nil)
         let maker = VideoMaker()
-        maker.moveImagesToSandBox(images:images,duration:1)
+        progressView.isHidden = false
+        progressView.text = "制作中"
+        maker.makeVideo(withImages: images, interval: 2, progress: {[weak self] (progress) in
+            self!.progressView.text = "\(progress)"
+        }) { (error, url) in
+            if url != nil {
+                let newVC = UINavigationController(rootViewController: VideoEditVC(videoURL: url!))
+                self.present(newVC, animated: true, completion: nil)
+            }
+            self.progressView.isHidden = true
+        }
     }
     
 }

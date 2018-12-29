@@ -89,7 +89,7 @@ class ViewController: UIViewController {
             }
             FFmpegManager.shared()?.makeVideoByImages(processBlock: { (progress) in
                 print("当前进度:\(progress*100)%")
-            }, completionBlock: { (error) in
+            }, completionBlock: { (error,videoUrl) in
                 if error != nil {
                     print("error:\(String(describing: error))")
                 }else {
@@ -121,7 +121,7 @@ class ViewController: UIViewController {
         let path = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first! + "/" + "video.mov"
         FFmpegManager.shared()?.conver(withInputPath: input, outputPath: path, processBlock: { (progress) in
             print("当前进度:\(progress*100)%")
-        }, completionBlock: { (error) in
+        }, completionBlock: { (error,videoUrl) in
             if error != nil {
                 print("error:\(String(describing: error))")
             }else {

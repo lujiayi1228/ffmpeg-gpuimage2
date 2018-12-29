@@ -23,10 +23,10 @@
 - (void)converWithInputPath:(NSString *)inputPath
                  outputPath:(NSString *)outpath
                processBlock:(void (^)(float process))processBlock
-            completionBlock:(void (^)(NSError *error))completionBlock;
+            completionBlock:(void (^)(NSError *,NSURL *))completionBlock;
 
 - (void)makeVideoByImagesWithProcessBlock:(void (^)(float process))processBlock
-                          completionBlock:(void (^)(NSError *error))completionBlock;
+                          completionBlock:(void (^)(NSError *,NSURL *))completionBlock;
 
 
 // 设置总时长
@@ -50,11 +50,11 @@
 - (void)makeVideoByImagesWithMusic:(NSString *)musicPath
                           duration:(float)duration
                       ProcessBlock:(void (^)(float))processBlock
-                   completionBlock:(void (^)(NSError *))completionBlock;
+                   completionBlock:(void (^)(NSError *,NSURL *))completionBlock;
 
 - (void)makeVideoWithCommand:(NSString *)command
                 ProcessBlock:(void (^)(float))processBlock
-             completionBlock:(void (^)(NSError *))completionBlock;
+             completionBlock:(void (^)(NSError *,NSURL *))completionBlock;
 
 
 /**
@@ -70,6 +70,6 @@
                imageCount:(int)count
                  interval:(float)interval
              ProcessBlock:(void (^)(float))processBlock
-          completionBlock:(void (^)(NSError *))completionBlock;
+          completionBlock:(void (^)(NSError *,NSURL *))completionBlock;
 
 @end

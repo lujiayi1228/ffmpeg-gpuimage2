@@ -12,13 +12,7 @@ class VideoMaker: NSObject {
     
     private var progressHandle : ((Float)->())?
     
-    private var finishHandle : ((Error?)->())?
-    
-    //视频载体
-    lazy var preview: GPUImageView = {
-        let fview = GPUImageView(frame: screenFrame)
-        return fview
-    }()
+    private var finishHandle : ((Error?,URL?)->())?
     
     //视频保存路径,合成视频后删除文件
     private let videoPath = documentPath! + "/ImagesToVideo"
@@ -30,14 +24,14 @@ class VideoMaker: NSObject {
     ///   - duration: 视频总时长(每张图片持续时间一样)
     ///   - progress: 合成进度
     ///   - finished: error = nil 完成
-    func makeVideo(withImages images: [UIImage], duration:Float , progress:@escaping (Float)->(), finished: @escaping(Error?)->()) {
+    func makeVideo(withImages images: [UIImage], interval:Float , progress:@escaping (Float)->(), finished: @escaping(Error?,URL?)->()) {
         progressHandle = progress
         finishHandle = finished
-        moveImagesToSandBox(images: images,duration: duration)
+        moveImagesToSandBox(images: images,interval: interval)
     }
     
     //将图片保存进沙盒，相册导入的image没有路径，ffmpeg合成需要路径
-    func moveImagesToSandBox(images:[UIImage],duration:Float) {
+    private func moveImagesToSandBox(images:[UIImage],interval:Float) {
         createVideoFolder()
         for index in 0..<images.count {
             let image = images[index]
@@ -55,16 +49,17 @@ class VideoMaker: NSObject {
                 try imageData?.write(to: URL(fileURLWithPath: file))
             } catch let error as NSError {
                 print("error:\(error)")
-                finishHandle!(error)
+                finishHandle!(error,nil)
                 return
             }
             UIGraphicsEndImageContext()
         }
         
         let manager = FFmpegManager.shared()
-        manager?.makeVideo(byImages: videoPath,imageCount:Int32(images.count), interval: duration/Float(images.count), processBlock: progressHandle, completionBlock: finishHandle)
+        manager?.makeVideo(byImages: videoPath,imageCount:Int32(images.count), interval: interval, processBlock: progressHandle, completionBlock: finishHandle)
     }
     
+    //图片按比例同一缩放至720*1280，方便之后合成视频
     private func scaleImage(image:UIImage) -> CGRect {
         var rect = CGRect()
         let asize = CGSize(width: 720, height: 1280)

@@ -55,6 +55,7 @@
 		BB3AD9D121D2197100DDA3E8 /* FilterCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB3AD9D021D2197100DDA3E8 /* FilterCollectionView.swift */; };
 		BB76F91E21D4B21700CB4371 /* VideoMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB76F91D21D4B21700CB4371 /* VideoMaker.swift */; };
 		BB76F92021D4C04100CB4371 /* VideoEditVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB76F91F21D4C04100CB4371 /* VideoEditVC.swift */; };
+		BB76F92421D72AC200CB4371 /* VideoEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB76F92321D72AC200CB4371 /* VideoEditor.swift */; };
 		BB9A965521AFC149008848D8 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB9A965421AFC149008848D8 /* AVFoundation.framework */; };
 		BB9A965721AFC154008848D8 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB9A965621AFC154008848D8 /* CoreAudio.framework */; };
 		BBAC7B9E21ABE87100DC520A /* qwe.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BBAC7B9D21ABE87100DC520A /* qwe.mp4 */; };
@@ -266,6 +267,7 @@
 		BB3AD9D021D2197100DDA3E8 /* FilterCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterCollectionView.swift; sourceTree = "<group>"; };
 		BB76F91D21D4B21700CB4371 /* VideoMaker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoMaker.swift; sourceTree = "<group>"; };
 		BB76F91F21D4C04100CB4371 /* VideoEditVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoEditVC.swift; sourceTree = "<group>"; };
+		BB76F92321D72AC200CB4371 /* VideoEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoEditor.swift; sourceTree = "<group>"; };
 		BB9A965421AFC149008848D8 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		BB9A965621AFC154008848D8 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		BBAC7B9D21ABE87100DC520A /* qwe.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = qwe.mp4; sourceTree = "<group>"; };
@@ -688,6 +690,7 @@
 			isa = PBXGroup;
 			children = (
 				BB76F91D21D4B21700CB4371 /* VideoMaker.swift */,
+				BB76F92321D72AC200CB4371 /* VideoEditor.swift */,
 				BB76F91F21D4C04100CB4371 /* VideoEditVC.swift */,
 			);
 			path = Project;
@@ -895,6 +898,7 @@
 				BB2761B821A69F1600401F99 /* AppDelegate.swift in Sources */,
 				BB26297621C73EF500EFE32B /* PreviewVC.swift in Sources */,
 				BB35D12321BE661B00C03E5E /* MusicViewController.swift in Sources */,
+				BB76F92421D72AC200CB4371 /* VideoEditor.swift in Sources */,
 				BB21DC0B21C37AF10000B625 /* cmdutils.c in Sources */,
 				BB3AD9CF21D1F89D00DDA3E8 /* LFGPUImageEmptyFilter.mm in Sources */,
 				BB20C6FC21BA2A06006A9F0D /* UIView+Extension.swift in Sources */,

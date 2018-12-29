@@ -11,11 +11,9 @@ import UIKit
 class VideoEditVC: UIViewController {
     
     //videoMaker
-    private lazy var videoMaker: VideoMaker = {
-        let maker = VideoMaker()
-        return maker
-    }()
+    private var videoEditor: VideoEditor?
     
+    private var videoPath : URL?
     //进度条
 //    private lazy var progressView: UIProgressView = {
 //        let pro
@@ -96,15 +94,14 @@ class VideoEditVC: UIViewController {
         return btn
     }()
     
-    //滤镜列表
-    private lazy var filterList: FilterCollectionView = {
-        let layout = UICollectionViewFlowLayout.init()
-        layout.itemSize = CGSize(width: 55, height: 55)
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 8)
-        let collection = FilterCollectionView(frame: CGRect(x: 0, y:screenHeight, width: screenWidth - 16, height: 55), collectionViewLayout: layout)
-        collection.delegate = self
-        return collection
-    }()
+    init(videoURL:URL) {
+        super.init(nibName: nil, bundle: nil)
+        self.videoPath = videoURL
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -113,21 +110,23 @@ class VideoEditVC: UIViewController {
 
     private func configView() {
         self.navigationController?.navigationBar.isHidden = true
-        self.view.addSubview(videoMaker.preview)
+        videoEditor = VideoEditor(video:self.videoPath!)
+        self.view.addSubview(videoEditor!.preview)
         self.view.addSubview(closeBtn)
         self.view.addSubview(settingBtn)
         self.view.addSubview(volumeBtn)
         self.view.addSubview(coverBtn)
         self.view.addSubview(musicBtn)
         self.view.addSubview(filterBtn)
+        self.view.addSubview(videoEditor!.filterList)
+    }
+    
+    deinit {
         
     }
 }
 
-extension VideoEditVC : UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
-    }
+extension VideoEditVC {
     
     @objc private func closeAction() {
 

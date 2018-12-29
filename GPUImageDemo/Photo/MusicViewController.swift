@@ -269,7 +269,7 @@ class MusicViewController: UIViewController {
             DispatchQueue.main.async {
                 self?.progress.text = String(format: "制作中:%d%", progress*100)
             }
-        }, completionBlock: { [weak self] (error) in
+        }, completionBlock: { [weak self] (error,videoUrl) in
             if error == nil {
                     let url = URL(fileURLWithPath: (self?.path)! + "1.mp4")
                     if UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(url.path) {
