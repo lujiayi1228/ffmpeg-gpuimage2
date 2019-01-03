@@ -126,7 +126,10 @@
     }
     if (mgr.completionBlock) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            NSURL *video = error == nil ? [NSURL fileURLWithPath:mgr.output] : nil;
+            NSURL *video = nil;
+            if (mgr.output != nil) {
+                video = error == nil ? [NSURL fileURLWithPath:mgr.output] : nil;
+            }
             mgr.completionBlock(error,video);
         });
     }
@@ -177,11 +180,16 @@
     
 //    NSString *commandStr = [NSString stringWithFormat:@"ffmpeg -r %f -y -i %@ -filter:v scale='min(720,iw)':min'(1280,ih)':force_original_aspect_ratio=decrease,pad=720:1280:(ow-iw)/2:(oh-ih)/2 -c:v libx264 -crf 18 -pix_fmt yuv420p %@",fps,[imagesPath stringByAppendingString:@"/%05d.jpg"], [imagesPath stringByAppendingString:@"video.mp4"]];
     
-    NSDictionary *aguments = [self inputStringWithImagesPath:imagesPath interval:interval imageCount:count];
-    NSString *input = aguments[@"input"];
-    NSString *filter = aguments[@"filter"];
+    //通过ffmpeg+滤镜 创建
+//    NSDictionary *aguments = [self inputStringWithImagesPath:imagesPath interval:interval imageCount:count];
+//    NSString *input = aguments[@"input"];
+//    NSString *filter = aguments[@"filter"];
     self.output = [imagesPath stringByAppendingString:@"/output.mp4"];
-    NSString *command = [NSString stringWithFormat:@"ffmpeg -y %@-filter_complex %@ -map [v] %@",input,filter,self.output];
+//    NSString *command = [NSString stringWithFormat:@"ffmpeg -y %@-filter_complex %@ -map [v] %@",input,filter,self.output];
+    
+    //通过建好的帧创建
+    NSString *input = [NSString stringWithFormat:@"%@/%@",imagesPath,@"%05d.png"];
+    NSString *command = [NSString stringWithFormat:@"ffmpeg -r 20 -y -i %@ -filter:v scale='min(720,iw)':min'(1280,ih)':force_original_aspect_ratio=decrease,pad=720:1280:(ow-iw)/2:(oh-ih)/2 -c:v libx264 -crf 18 -pix_fmt yuv420p %@",input, self.output];
     // 放在子线程运行
     NSLog(@"%@",command);
     [self runCmd:command];
@@ -224,6 +232,52 @@
         }
     }
     return @{@"input":input,@"filter":filter};
+}
+
+- (void)makeVideoByImage:(NSString *)image
+               videoName:(NSString *)videoName
+                duration:(float)duration
+            ProcessBlock:(void (^)(float))processBlock
+         completionBlock:(void (^)(NSError *,NSURL *))completionBlock
+{
+    self.processBlock = processBlock;
+    self.completionBlock = completionBlock;
+    self.isBegin = NO;
+    
+    NSString *commandStr = [NSString stringWithFormat:@"ffmpeg -r 20 -y -loop 1 -t %f -i %@ -c:v libx264 -crf 18 -pix_fmt yuv420p %@",duration ,image, videoName];
+    
+    // 放在子线程运行
+    [self runCmd:commandStr];
+}
+
+- (void)concatVideos:(NSArray *)videos
+         outputVideo:(NSString *)outputName
+        ProcessBlock:(void (^)(float))processBlock
+     completionBlock:(void (^)(NSError *,NSURL *))completionBlock
+{
+    if (videos.count <= 1) {
+        NSLog(@"拼接视频的源文件不足");
+        return;
+    }
+    self.processBlock = processBlock;
+    self.completionBlock = completionBlock;
+    self.isBegin = NO;
+    
+    __block NSString *input = @"";
+    __block NSString *filterStr = @"";
+    [videos enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        if (obj != nil) {
+            input = [input stringByAppendingString:[NSString stringWithFormat:@"-i %@.mp4 ",obj]];
+            NSString *str = [NSString stringWithFormat:@"[%lu:v]",(unsigned long)idx];
+            filterStr = [filterStr stringByAppendingString:str];
+        }
+    }];
+    filterStr = [filterStr stringByAppendingString:[NSString stringWithFormat:@"concat=n=%lu:v=1:a=0[v]",(unsigned long)videos.count]];
+    
+    NSString *commandStr = [NSString stringWithFormat:@"ffmpeg -y %@-filter_complex '%@' -map '[v]' %@",input,filterStr,outputName];
+    
+    // 放在子线程运行
+    [self runCmd:commandStr];
 }
 
 @end

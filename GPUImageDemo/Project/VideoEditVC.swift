@@ -14,6 +14,8 @@ class VideoEditVC: UIViewController {
     private var videoEditor: VideoEditor?
     
     private var videoPath : URL?
+    
+    private var images : [UIImage] = []
     //进度条
 //    private lazy var progressView: UIProgressView = {
 //        let pro
@@ -90,13 +92,18 @@ class VideoEditVC: UIViewController {
         btn.setTitle("滤", for: .normal)
         btn.titleLabel?.font = UIFont.systemFont(ofSize: 15)
         btn.setTitleColor(whiteColor, for: .normal)
-        btn.addTarget(self, action: #selector(filterAction), for: .touchUpInside)
+        btn.addTarget(self, action: #selector(filterAction(sender:)), for: .touchUpInside)
         return btn
     }()
     
     init(videoURL:URL) {
         super.init(nibName: nil, bundle: nil)
         self.videoPath = videoURL
+    }
+    
+    init(images: [UIImage]) {
+        super.init(nibName: nil, bundle: nil)
+        self.images = images
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -109,16 +116,17 @@ class VideoEditVC: UIViewController {
     }
 
     private func configView() {
+        self.view.backgroundColor = blackColor
         self.navigationController?.navigationBar.isHidden = true
-        videoEditor = VideoEditor(video:self.videoPath!)
-        self.view.addSubview(videoEditor!.preview)
+        videoEditor = VideoEditor(images:self.images,superView:self.view)
+        videoEditor!.filterList.center = CGPoint(x: screenWidth/2, y: settingBtn.bottom + 50)
+        videoEditor!.animationType = .HorizontalMoveFromRight
         self.view.addSubview(closeBtn)
         self.view.addSubview(settingBtn)
         self.view.addSubview(volumeBtn)
         self.view.addSubview(coverBtn)
         self.view.addSubview(musicBtn)
         self.view.addSubview(filterBtn)
-        self.view.addSubview(videoEditor!.filterList)
     }
     
     deinit {
@@ -128,8 +136,20 @@ class VideoEditVC: UIViewController {
 
 extension VideoEditVC {
     
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        videoEditor?.startPlay()
+    }
+    
     @objc private func closeAction() {
-
+        self.navigationController?.dismiss(animated: true, completion: { [weak self] in
+            self!.videoEditor?.stopPlay()
+        })
     }
     
     @objc private func settingAction() {
@@ -148,8 +168,9 @@ extension VideoEditVC {
         
     }
     
-    @objc private func filterAction() {
-        
+    @objc private func filterAction(sender:UIButton) {
+        videoEditor?.filterList.isHidden = sender.isSelected
+        sender.isSelected = !sender.isSelected
     }
 }
 

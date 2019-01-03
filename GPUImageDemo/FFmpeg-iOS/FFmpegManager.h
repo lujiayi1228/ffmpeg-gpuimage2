@@ -61,7 +61,7 @@
  图片合成视频,不需要音乐
 
  @param imagesPath 图片路径
- @param imageCount 图片数量
+ @param count 图片数量
  @param interval 每张图的持续时间
  @param processBlock 进度回调
  @param completionBlock 完成回调
@@ -72,4 +72,33 @@
              ProcessBlock:(void (^)(float))processBlock
           completionBlock:(void (^)(NSError *,NSURL *))completionBlock;
 
+
+/**
+ 单张图片转成视频，test方法
+
+ @param image 图片
+ @param videoName 输出名称(含路径)
+ @param duration 持续时间
+ @param processBlock 进度block
+ @param completionBlock 完成block
+ */
+- (void)makeVideoByImage:(NSString *)image
+               videoName:(NSString *)videoName
+                duration:(float)duration
+            ProcessBlock:(void (^)(float))processBlock
+         completionBlock:(void (^)(NSError *,NSURL *))completionBlock;
+
+
+/**
+ 合成视频，test方法
+
+ @param videos video文件名数组(含路径)
+ @param outputName 输出名称（含路径）
+ @param processBlock 进度block
+ @param completionBlock 完成block
+ */
+- (void)concatVideos:(NSArray *)videos
+         outputVideo:(NSString *)outputName
+        ProcessBlock:(void (^)(float))processBlock
+     completionBlock:(void (^)(NSError *,NSURL *))completionBlock;
 @end

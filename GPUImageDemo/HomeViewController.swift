@@ -123,20 +123,31 @@ class HomeViewController: UIViewController {
     }
     
     private func recievedImages(withImages images: [UIImage]) {
+        //照片编辑
 //        let newVC = PhotoEditVC.init(images: images)
 //        self.present(UINavigationController(rootViewController: newVC), animated: true, completion: nil)
-        let maker = VideoMaker()
-        progressView.isHidden = false
-        progressView.text = "制作中"
-        maker.makeVideo(withImages: images, interval: 2, progress: {[weak self] (progress) in
-            self!.progressView.text = "\(progress)"
-        }) { (error, url) in
-            if url != nil {
-                let newVC = UINavigationController(rootViewController: VideoEditVC(videoURL: url!))
-                self.present(newVC, animated: true, completion: nil)
-            }
-            self.progressView.isHidden = true
-        }
+        //测试
+//        let newVC = TestViewController.init(images: images)
+//        self.present(UINavigationController(rootViewController: newVC), animated: true, completion: nil)
+        
+        //制作视频成功后跳转编辑页
+//        let maker = VideoMaker()
+//        progressView.isHidden = false
+//        progressView.text = "制作中"
+//        maker.makeVideo(withImages: images, interval: 2, progress: {[weak self] (progress) in
+//            self!.progressView.text = "\(progress)"
+//        }) { (error, url) in
+//            if url != nil {
+//                print("\(Date())______video制作完成")
+//                let newVC = UINavigationController(rootViewController: VideoEditVC(videoURL: url!))
+//                self.present(newVC, animated: true, completion: nil)
+//            }
+//            self.progressView.isHidden = true
+//        }
+        
+        //直接将照片传递给edit
+        let newVC = UINavigationController(rootViewController: VideoEditVC(images: images))
+        self.present(newVC, animated: true, completion: nil)
     }
     
 }
